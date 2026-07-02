@@ -1,42 +1,33 @@
 import React, { useState } from 'react';
-import {useAuth} from "../hook/useAuth"
+import { useAuth } from '../hook/useAuth';
 import { useNavigate } from 'react-router';
 
-const Register = () => {
-
-    const{handleRegister}=useAuth();
+const Login = () => {
+    const { handleLogin } = useAuth();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        name: '',
-        password: '',
         email: '',
-        contact: '',
-        isSeller: false
+        password: ''
     });
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: value
         }));
     };
 
-    const handleRadioChange = (isSellerValue) => {
-        setFormData(prev => ({ ...prev, isSeller: isSellerValue }));
-    }
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Registration Data:', formData);
-        await handleRegister({
-            email: formData.email,
-            contact: formData.contactNumber,
-            password: formData.password,
-            isSeller: formData.isSeller,
-            fullname: formData.name,
-        })
+        console.log('Login Data:', formData);
+        if (handleLogin) {
+            await handleLogin({
+                email: formData.email,
+                password: formData.password
+            });
+        }
         navigate("/");
     };
 
@@ -58,22 +49,22 @@ const Register = () => {
 
                 <div className="z-10 text-white max-w-[400px] mb-40">
                     <h1 className="text-[2.5rem] lg:text-[3rem] font-bold mb-6 leading-[1.1] text-white">
-   <span className="font-['Cinzel'] text-amber-300 tracking-[0.25em] drop-shadow-lg">
-    ZIVA
-</span>
-    <span className="text-white">
-        {" "}— Where Fashion Meets Identity
-    </span>
-</h1>
-                  <p className="text-base text-white/85 leading-8 pr-8 tracking-wide font-light">
-    <span className="font-semibold text-cyan-300 underline decoration-cyan-300/60 underline-offset-4">
-        Join ZIVA
-    </span>{" "}
-    and discover
-    <span className="font-medium text-white"> premium fashion </span>
-    from trusted suppliers
-    <span className="text-sky-200 font-medium"> worldwide.</span>
-</p>
+                        <span className="font-['Cinzel'] text-amber-300 tracking-[0.25em] drop-shadow-lg">
+                            ZIVA
+                        </span>
+                        <span className="text-white">
+                            {" "}— Where Fashion Meets Identity
+                        </span>
+                    </h1>
+                    <p className="text-base text-white/85 leading-8 pr-8 tracking-wide font-light">
+                        <span className="font-semibold text-cyan-300 underline decoration-cyan-300/60 underline-offset-4">
+                            Welcome back
+                        </span>{" "}
+                        to
+                        <span className="font-medium text-white"> premium fashion </span>
+                        from trusted suppliers
+                        <span className="text-sky-200 font-medium"> worldwide.</span>
+                    </p>
                 </div>
 
                 {/* Fashion & Apparel Graphic */}
@@ -125,18 +116,18 @@ const Register = () => {
                 </div>
 
                 <div className="w-full max-w-[380px] z-10">
-                    <h2 className="text-[#3B2D9E] text-[1.75rem] font-bold mb-8">Create new account</h2>
+                    <h2 className="text-[#3B2D9E] text-[1.75rem] font-bold mb-8">Sign in to ZIVA</h2>
                     
                     <form onSubmit={handleSubmit} className="space-y-4">
                         
-                        {/* Name Input */}
+                        {/* Email Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="name">Name</label>
+                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="email">Email Address</label>
                             <input 
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.fullame}
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
                                 onChange={handleChange}
                                 required
                                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
@@ -156,88 +147,25 @@ const Register = () => {
                                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
                             />
                         </div>
-
-                        {/* Email Input */}
-                        <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="email">Email Address</label>
-                            <input 
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
-                            />
-                        </div>
-
-                        {/* Contact Number Input */}
-                        <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="contactNumber">Contact Number</label>
-                            <input 
-                                type="tel"
-                                id="contactNumber"
-                                name="contactNumber"
-                                value={formData.contactNumber}
-                                onChange={handleChange}
-                                required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
-                            />
-                        </div>
-
-                        {/* Signing As */}
-                        <div className="flex flex-col pt-3">
-                            <label className="text-[13px] text-gray-500 mb-2">Signing As</label>
-                            <div className="flex items-center space-x-6 sm:space-x-12">
-                                <label className="flex items-center cursor-pointer group">
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!formData.isSeller ? 'border-black' : 'border-gray-400 group-hover:border-gray-600'}`}>
-                                        {!formData.isSeller && <div className="w-2 h-2 bg-black rounded-full"></div>}
-                                    </div>
-                                    <input 
-                                        type="radio" 
-                                        name="signingAs" 
-                                        className="hidden" 
-                                        checked={!formData.isSeller}
-                                        onChange={() => handleRadioChange(false)}
-                                    />
-                                    <span className="ml-2.5 text-[14px] text-gray-800">Buyer</span>
-                                </label>
-
-                                <label className="flex items-center cursor-pointer group">
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${formData.isSeller ? 'border-black' : 'border-gray-400 group-hover:border-gray-600'}`}>
-                                        {formData.isSeller && <div className="w-2 h-2 bg-black rounded-full"></div>}
-                                    </div>
-                                    <input 
-                                        type="radio" 
-                                        name="signingAs" 
-                                        className="hidden" 
-                                        checked={formData.isSeller}
-                                        onChange={() => handleRadioChange(true)}
-                                    />
-                                    <span className="ml-2.5 text-[14px] text-gray-800">Supplier</span>
-                                </label>
-                            </div>
+                        
+                        <div className="flex justify-end pt-1">
+                            <a href="#" className="text-[12px] text-[#3B2D9E] hover:underline font-medium">Forgot Password?</a>
                         </div>
 
                         {/* Submit Button */}
-                        <div className="pt-6">
+                        <div className="pt-4">
                             <button
-    type="submit"
-    className="w-36 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm shadow-md hover:scale-105"
->
-                                SIGN UP
+                                type="submit"
+                                className="w-36 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm shadow-md hover:scale-105"
+                            >
+                                LOGIN
                             </button>
                         </div>
                         
-                        {/* Terms Text */}
-                        <p className="text-[10px] text-gray-700 mt-1 pb-4 border-b border-transparent">
-                            By registering, you agree to the <a href="#" className="text-[#3B2D9E] underline">Terms and Conditions</a>
-                        </p>
-
-                        {/* Login Link */}
+                        {/* Register Link */}
                         <div className="text-center pt-8">
                             <p className="text-[14px] font-medium text-gray-800">
-                                Already registered? <a href="/login" className="text-[#3B2D9E] font-semibold hover:underline">Login</a>
+                                Don't have an account? <a href="/register" className="text-[#3B2D9E] font-semibold hover:underline">Register</a>
                             </p>
                         </div>
 
@@ -248,4 +176,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Login;

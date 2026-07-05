@@ -137,7 +137,7 @@ const Register = () => {
                                 type="text"
                                 id="name"
                                 name="name"
-                                value={formData.fullame}
+                                value={formData.name}
                                 onChange={handleChange}
                                 required
                                 className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"

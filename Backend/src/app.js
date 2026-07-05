@@ -2,6 +2,7 @@ import express from "express"
 import cookieParser from "cookie-parser"
 import morgan from "morgan"
 import authRouter from "./routes/auth.routes.js"
+import productRouter from "./routes/product.routes.js"
 import cors from "cors"
 import passport from "passport"
 import { Strategy as GoogleStrategy } from "passport-google-oauth20"
@@ -30,6 +31,7 @@ passport.use(new GoogleStrategy({
 }))
 
 app.use("/api/auth", authRouter)
+app.use("/api/products",productRouter)
 
 app.get("/",(_req,res)=>{
     res.statusCode(200).json({message: "Server is running"})

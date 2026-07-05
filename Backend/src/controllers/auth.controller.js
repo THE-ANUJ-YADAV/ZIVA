@@ -106,3 +106,4 @@ export const googleCallback = async (req,res)=>{
     
     res.redirect("http://localhost:5173/")
 }
+

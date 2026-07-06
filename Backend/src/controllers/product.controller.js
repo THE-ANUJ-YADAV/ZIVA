@@ -1,4 +1,4 @@
-import prductModel from "../models/product.model.js";
+import productModel from "../models/product.model.js";
 import { uploadFile } from "../services/storage.service.js";
 
 export async function createProduct(req,res) {
@@ -12,7 +12,7 @@ export async function createProduct(req,res) {
         )
     }))
 
-    const product = await prductModel.create({
+    const product = await productModel.create({
         title,
         description,
         price:{
@@ -29,4 +29,16 @@ export async function createProduct(req,res) {
         product
     })
 
+}
+
+export async function getSellerProducts(req,res){
+    const seller = req.user
+    
+    const products = await productModel.find({seller: seller._id})
+
+    res.status(200).json({
+        message: "Products fetched successfully",
+        success: true,
+        products
+    })
 }

@@ -20,16 +20,18 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login Data:', formData);
-        if (handleLogin) {
-            await handleLogin({
-                email: formData.email,
-                password: formData.password
-            });
+        try {
+            const user = await handleLogin({ email: formData.email, password: formData.password });
+            if (user.role == "buyer") {
+                navigate("/");
+            } else if (user.role == "seller") {
+                navigate("/seller/dashboard");
+            }
+        } catch (error) {
+            console.error("Login failed", error);
         }
-        navigate("/");
     };
 
     return (

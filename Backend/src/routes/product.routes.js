@@ -1,6 +1,6 @@
 import express from 'express'
 import { authenticateSeller } from '../middleware/auth.middleware.js'
-import { createProduct, getSellerProducts } from '../controllers/product.controller.js'
+import { createProduct, getAllproducts, getSellerProducts } from '../controllers/product.controller.js'
 import multer from 'multer'
 import { createProductValidator } from '../validator/product.validator.js'
 
@@ -18,6 +18,9 @@ router.post("/",authenticateSeller,upload.array('images',7),createProduct,create
 
 // Get all products
 router.get("/seller",authenticateSeller,getSellerProducts)
+
+// Get /api/products
+router.get("/",getAllproducts)
 
 
 export default router

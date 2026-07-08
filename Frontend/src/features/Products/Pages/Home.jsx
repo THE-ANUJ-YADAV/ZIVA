@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProducts';
+import {useNavigate} from 'react-router'
+
 
 // --- Icons ---
 const SearchIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>);
@@ -10,6 +12,8 @@ const UserIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w
 
 const Navbar = () => {
     const user = useSelector(state => state.auth?.user);
+
+    
 
     return (
         <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
@@ -210,6 +214,7 @@ const Footer = () => (
 const Home = () => {
     const products = useSelector(state => state.product.products);
     const { handleGetAllProducts } = useProduct();
+    const navigate = useNavigate()
 
     useEffect(() => {
         handleGetAllProducts();
@@ -233,9 +238,11 @@ const Home = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {products && products.length > 0 ? (
                         products.map((product) => (
-                            <div key={product._id} className="group flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 overflow-hidden border border-gray-100">
+                            <div
+                            onClick={()=> navigate(`/product/${product._id}`)}
+                             key={product._id}  className="group flex flex-col bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-[1.03] transition-all duration-300 overflow-hidden border border-gray-100">
                                 {/* Top: Product Image */}
-                                <div className="aspect-[4/5] relative overflow-hidden bg-gray-100">
+                                <div  className="aspect-[4/5] relative overflow-hidden bg-gray-100">
                                     {product.images && product.images.length > 0 ? (
                                         <img
                                             src={product.images[0].url}

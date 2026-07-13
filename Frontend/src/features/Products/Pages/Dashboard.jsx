@@ -2,7 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useProduct } from '../hooks/useProducts';
 import { useSelector } from 'react-redux';
 import { Package, Plus, Calendar, Edit, Trash2, Eye, TrendingUp, DollarSign, Clock, AlertCircle, RefreshCcw } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+
 
 const Dashboard = () => {
   const { handleGetSellerProduct } = useProduct();
@@ -10,6 +11,8 @@ const Dashboard = () => {
   
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
 
   const fetchProducts = async () => {
     setIsLoading(true);
@@ -246,6 +249,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {sellerProducts.map((product) => (
               <div 
+              onClick={()=>{navigate(`/seller/product/${product._id}`)}}
                 key={product._id} 
                 className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 group flex flex-col"
               >

@@ -1,6 +1,6 @@
 import express from 'express'
 import { authenticateSeller } from '../middleware/auth.middleware.js'
-import { createProduct, getAllproducts, getSellerProducts,getProductDetails } from '../controllers/product.controller.js'
+import { createProduct, getAllproducts, getSellerProducts,getProductDetails, addProductVariant } from '../controllers/product.controller.js'
 import multer from 'multer'
 import { createProductValidator } from '../validator/product.validator.js'
 
@@ -24,6 +24,10 @@ router.get("/",getAllproducts)
 
 // Get product details by id
 router.get("/detail/:id",getProductDetails)
+
+// Add new variant to the product
+
+router.post("/:productId/variants",authenticateSeller,upload.array('images',7),addProductVariant)
 
 
 export default router

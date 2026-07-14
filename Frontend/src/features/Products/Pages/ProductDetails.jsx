@@ -7,6 +7,7 @@ import {
     FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 import { BsLightningFill } from 'react-icons/bs';
+import { useCart } from '../../cart/hook/useCart';
 
 const MOCK_PRODUCT = {
     "price": {
@@ -78,6 +79,8 @@ const ProductDetails = () => {
 
     const { handleGetProductById } = useProduct();
 
+    const { handleaddItem } = useCart();
+
     useEffect(() => {
         let isMounted = true;
         async function fetchProductDetail() {
@@ -129,6 +132,8 @@ const ProductDetails = () => {
             });
         });
     }, [product, selectedAttributes]);
+
+    
 
     const handleAttributeSelect = (attrName, attrValue) => {
         setSelectedAttributes(prev => {
@@ -327,7 +332,14 @@ const ProductDetails = () => {
                                 <div className="text-gray-600 text-[15px] font-medium leading-relaxed whitespace-pre-wrap bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50">{displayDesc}</div>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                                <button className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0}>
+                                <button className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0}
+                                 onClick={()=>{
+                                    handleaddItem({
+                                        productId: product._id,
+                                        variantId: selectedVariant._id
+                                    })
+                                 }}
+                                >
                                     <FiShoppingCart size={22} strokeWidth={2.5} />Add to Cart
                                 </button>
                                 <button className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-green-500 hover:from-orange-600 hover:to-green-600 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0}>

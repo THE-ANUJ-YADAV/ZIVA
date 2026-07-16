@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useProduct } from '../hooks/useProducts';
 import {useNavigate} from 'react-router'
+import { Link } from 'react-router';
+
 
 
 // --- Icons ---
@@ -42,7 +44,9 @@ const Navbar = () => {
                         <button className="hover:text-indigo-600 transition-colors"><SearchIcon /></button>
                         <button className="hover:text-indigo-600 transition-colors"><HeartIcon /></button>
                         <button className="hover:text-indigo-600 transition-colors relative">
-                            <CartIcon />
+                            <Link to="/cart">
+                            <CartIcon/>
+                            </Link>
                             <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">2</span>
                         </button>
                         <div className="flex items-center gap-2">

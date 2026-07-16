@@ -55,15 +55,20 @@ const getAvailableAttributes = (variants) => {
     variants.forEach(variant => {
         if (variant.attributes) {
             Object.entries(variant.attributes).forEach(([key, value]) => {
-                const normKey = key.toLowerCase();
-                if (!attrs[normKey]) attrs[normKey] = { originalKey: key, values: new Set() };
-                attrs[normKey].values.add(value);
+                const normKey = key.trim().toLowerCase();
+                if (!attrs[normKey]) attrs[normKey] = { originalKey: key.trim(), values: new Map() };
+                
+                const strValue = String(value).trim();
+                const normValue = strValue.toLowerCase();
+                if (!attrs[normKey].values.has(normValue)) {
+                    attrs[normKey].values.set(normValue, strValue);
+                }
             });
         }
     });
     const result = {};
     Object.keys(attrs).forEach(key => {
-        result[attrs[key].originalKey] = Array.from(attrs[key].values);
+        result[attrs[key].originalKey] = Array.from(attrs[key].values.values());
     });
     return result;
 };
@@ -106,14 +111,42 @@ const ProductDetails = () => {
 
     useEffect(() => {
         if (product?.variants?.length > 0) {
-            const defaultVariant = product.variants.find(v => v.stock > 0) || product.variants[0];
-            if (defaultVariant?.attributes) {
+            const availableAttrs = getAvailableAttributes(product.variants);
+            const keys = Object.keys(availableAttrs);
+            if (keys.length > 0) {
                 const initialAttrs = {};
-                Object.entries(defaultVariant.attributes).forEach(([k, v]) => {
-                    const availableKeys = Object.keys(getAvailableAttributes(product.variants));
-                    const origKey = availableKeys.find(ak => ak.toLowerCase() === k.toLowerCase()) || k;
-                    initialAttrs[origKey] = v;
-                });
+                let validVariants = product.variants;
+                
+                // Auto-select attributes if they have exactly one valid option
+                let changed = true;
+                while (changed) {
+                    changed = false;
+                    keys.forEach(k => {
+                        if (!initialAttrs[k]) {
+                            const availableVals = new Set();
+                            validVariants.forEach(v => {
+                                const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
+                                if (vKey && v.attributes[vKey]) {
+                                    availableVals.add(String(v.attributes[vKey]).trim().toLowerCase());
+                                }
+                            });
+                            
+                            if (availableVals.size === 1) {
+                                const normVal = Array.from(availableVals)[0];
+                                const origVal = availableAttrs[k].find(val => String(val).trim().toLowerCase() === normVal);
+                                if (origVal) {
+                                    initialAttrs[k] = origVal;
+                                    changed = true;
+                                    validVariants = validVariants.filter(v => {
+                                        const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
+                                        return vKey && String(v.attributes[vKey]).trim().toLowerCase() === normVal;
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+                
                 setSelectedAttributes(initialAttrs);
             }
         }
@@ -123,47 +156,104 @@ const ProductDetails = () => {
     const attributeKeys = useMemo(() => Object.keys(availableAttributes), [availableAttributes]);
 
     const selectedVariant = useMemo(() => {
-        if (!product?.variants) return null;
+        if (!product?.variants || !attributeKeys.length) return null;
+        // Require all attributes to be selected to find a definitive exact variant
+        if (Object.keys(selectedAttributes).length < attributeKeys.length) return null;
+        
         return product.variants.find(variant => {
             if (!variant.attributes) return false;
-            return Object.entries(selectedAttributes).every(([key, value]) => {
+            return attributeKeys.every(key => {
+                const selectedVal = selectedAttributes[key];
                 const varAttrKey = Object.keys(variant.attributes).find(k => k.toLowerCase() === key.toLowerCase());
-                return varAttrKey && variant.attributes[varAttrKey] === value;
+                return varAttrKey && String(variant.attributes[varAttrKey]).trim().toLowerCase() === String(selectedVal).trim().toLowerCase();
             });
         });
-    }, [product, selectedAttributes]);
-
-    
+    }, [product, selectedAttributes, attributeKeys]);
 
     const handleAttributeSelect = (attrName, attrValue) => {
         setSelectedAttributes(prev => {
-            const next = { ...prev, [attrName]: attrValue };
-            const exactMatch = product.variants.find(v => {
-                return Object.entries(next).every(([k, val]) => {
-                    const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
-                    return vKey && v.attributes[vKey] === val;
-                });
-            });
-
-            if (exactMatch) return next;
-
-            const fallbackVariant = product.variants.find(v => {
-                const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === attrName.toLowerCase());
-                return vKey && v.attributes[vKey] === attrValue;
-            });
-
-            if (fallbackVariant && fallbackVariant.attributes) {
-                const newAttrs = {};
-                Object.entries(fallbackVariant.attributes).forEach(([k, v]) => {
-                    const origKey = attributeKeys.find(ak => ak.toLowerCase() === k.toLowerCase()) || k;
-                    newAttrs[origKey] = v;
-                });
-                return newAttrs;
+            if (prev[attrName] === attrValue) {
+                const next = { ...prev };
+                delete next[attrName];
+                return next;
             }
-            return next;
+
+            let resolved = { [attrName]: attrValue };
+            
+            let validVariants = product.variants.filter(v => {
+                const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === attrName.toLowerCase());
+                return vKey && String(v.attributes[vKey]).trim().toLowerCase() === String(attrValue).trim().toLowerCase();
+            });
+            
+            attributeKeys.forEach(k => {
+                if (k !== attrName && prev[k]) {
+                    const candidateVariants = validVariants.filter(v => {
+                        const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
+                        return vKey && String(v.attributes[vKey]).trim().toLowerCase() === String(prev[k]).trim().toLowerCase();
+                    });
+                    
+                    if (candidateVariants.length > 0) {
+                        resolved[k] = prev[k];
+                        validVariants = candidateVariants; 
+                    }
+                }
+            });
+            
+            let changed = true;
+            while (changed) {
+                changed = false;
+                attributeKeys.forEach(k => {
+                    if (!resolved[k]) {
+                        const availableVals = new Set();
+                        validVariants.forEach(v => {
+                            const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
+                            if (vKey && v.attributes[vKey]) {
+                                availableVals.add(String(v.attributes[vKey]).trim().toLowerCase());
+                            }
+                        });
+                        
+                        if (availableVals.size === 1) {
+                            const normVal = Array.from(availableVals)[0];
+                            const origVal = availableAttributes[k].find(val => String(val).trim().toLowerCase() === normVal);
+                            if (origVal) {
+                                resolved[k] = origVal;
+                                changed = true;
+                                validVariants = validVariants.filter(v => {
+                                    const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === k.toLowerCase());
+                                    return vKey && String(v.attributes[vKey]).trim().toLowerCase() === normVal;
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+            
+            return resolved;
         });
         setActiveImage(0);
     };
+
+    const checkIsValidOption = (attrName, attrValue) => {
+        if (!product?.variants) return false;
+        
+        const attrIndex = attributeKeys.findIndex(k => k.toLowerCase() === attrName.toLowerCase());
+        
+        return product.variants.some(v => {
+            const vKey = Object.keys(v.attributes || {}).find(vk => vk.toLowerCase() === attrName.toLowerCase());
+            if (!vKey || String(v.attributes[vKey]).trim().toLowerCase() !== String(attrValue).trim().toLowerCase()) {
+                return false;
+            }
+            
+            return Object.entries(selectedAttributes).every(([k, selectedVal]) => {
+                const kIndex = attributeKeys.findIndex(key => key.toLowerCase() === k.toLowerCase());
+                if (kIndex >= attrIndex) return true;
+                
+                const vk = Object.keys(v.attributes || {}).find(key => key.toLowerCase() === k.toLowerCase());
+                return vk && String(v.attributes[vk]).trim().toLowerCase() === String(selectedVal).trim().toLowerCase();
+            });
+        });
+    };
+
 
     if (loading) {
         return (
@@ -180,7 +270,7 @@ const ProductDetails = () => {
     const displayTitle = selectedVariant?.title || product.title || '';
     const displayDesc = selectedVariant?.description || product.description || '';
     const displayStock = selectedVariant?.stock !== undefined ? selectedVariant.stock : (product.stock ?? -1);
-    
+
     const rawVariantId = selectedVariant?._id;
     const variantIdStr = rawVariantId ? (rawVariantId.$oid || rawVariantId) : null;
     const rawProductId = product._id;
@@ -275,7 +365,8 @@ const ProductDetails = () => {
                                         <span className="text-gray-300">•</span>
                                         {displayStock !== 0 ? (
                                             <span className="text-green-600 font-bold flex items-center bg-green-50 px-3 py-1.5 rounded-lg">
-                                                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>In Stock
+                                                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                                                {displayStock > 0 ? `${displayStock} In Stock` : 'In Stock'}
                                             </span>
                                         ) : (
                                             <span className="text-red-600 font-bold flex items-center bg-red-50 px-3 py-1.5 rounded-lg">
@@ -312,11 +403,13 @@ const ProductDetails = () => {
                                             <div className="flex flex-wrap gap-3">
                                                 {availableAttributes[attrName].map(val => {
                                                     const isSelected = selectedAttributes[attrName] === val;
+                                                    const isValid = checkIsValidOption(attrName, val);
                                                     return (
                                                         <button
                                                             key={val}
                                                             onClick={() => handleAttributeSelect(attrName, val)}
-                                                            className={`relative overflow-hidden px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${isSelected ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200 ring-2 ring-indigo-200 ring-offset-2' : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-600 hover:text-indigo-600 hover:shadow-sm'}`}
+                                                            disabled={!isValid}
+                                                            className={`relative overflow-hidden px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 border ${isSelected ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-200 ring-2 ring-indigo-200 ring-offset-2' : isValid ? 'bg-white text-gray-700 border-gray-200 hover:border-indigo-600 hover:text-indigo-600 hover:shadow-sm' : 'bg-gray-50 text-gray-400 border-gray-200 opacity-50 cursor-not-allowed'}`}
                                                         >
                                                             {val}
                                                         </button>
@@ -332,18 +425,20 @@ const ProductDetails = () => {
                                 <div className="text-gray-600 text-[15px] font-medium leading-relaxed whitespace-pre-wrap bg-gray-50/50 p-5 rounded-2xl border border-gray-100/50">{displayDesc}</div>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                                <button className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0}
-                                 onClick={()=>{
-                                    handleaddItem({
-                                        productId: product._id,
-                                        variantId: selectedVariant._id
-                                    })
-                                 }}
+                                <button className="flex-1 flex items-center justify-center gap-3 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-indigo-200 hover:shadow-indigo-300 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0 || !selectedVariant}
+                                    onClick={() => {
+                                        if (selectedVariant) {
+                                            handleaddItem({
+                                                productId: product._id,
+                                                variantId: selectedVariant._id
+                                            });
+                                        }
+                                    }}
                                 >
                                     <FiShoppingCart size={22} strokeWidth={2.5} />Add to Cart
                                 </button>
-                                <button className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-green-500 hover:from-orange-600 hover:to-green-600 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0}>
-                                    <BsLightningFill size={22} />Buy Now
+                                <button className="flex-1 flex items-center justify-center gap-3 bg-gradient-to-r from-orange-500 to-green-500 hover:from-orange-600 hover:to-green-600 text-white px-8 py-4.5 rounded-2xl font-bold text-lg shadow-xl shadow-orange-200/50 transition-all duration-300 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed" disabled={displayStock === 0 || !selectedVariant}>
+                                     <BsLightningFill size={22} />Buy Now
                                 </button>
                             </div>
                             <hr className="mb-8 border-gray-100" />

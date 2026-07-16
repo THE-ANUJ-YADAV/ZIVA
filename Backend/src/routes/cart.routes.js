@@ -1,7 +1,7 @@
 import express from 'express'
 import {authenticateUser} from '../middleware/auth.middleware.js'
 import { validateAddToCart } from '../validator/cart.validator.js';
-import { addToCart, getCart } from '../controllers/cart.controller.js';
+import { addToCart, getCart, removeFromCart } from '../controllers/cart.controller.js';
 
 const router = express.Router();
 
@@ -12,5 +12,7 @@ router.post("/add/:productId/:variantId",authenticateUser,validateAddToCart,addT
 //Get user's cart
 router.get('/',authenticateUser,getCart)
 
+// Remove item from cart
+router.delete('/remove/:itemId', authenticateUser, removeFromCart)
 
 export default router

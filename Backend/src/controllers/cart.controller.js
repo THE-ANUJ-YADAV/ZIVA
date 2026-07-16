@@ -85,3 +85,32 @@ export const getCart = async (req,res) => {
         cart
     })
 }
+
+export const removeFromCart = async (req, res) => {
+    try {
+        const { itemId } = req.params;
+        const cart = await cartModel.findOneAndUpdate(
+            { user: req.user._id },
+            { $pull: { items: { _id: itemId } } },
+            { new: true }
+        ).populate("items.product");
+
+        if (!cart) {
+            return res.status(404).json({
+                message: "Cart not found",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Item removed from cart",
+            success: true,
+            cart
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+}

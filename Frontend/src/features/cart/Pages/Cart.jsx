@@ -15,7 +15,7 @@ import { updateQuantity, removeItem } from "../state/cart.slice";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items) || [];
-  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem } =
+  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem } =
     useCart();
   const dispatch = useDispatch();
 
@@ -170,11 +170,10 @@ const Cart = () => {
                                   className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:cursor-not-allowed"
                                   disabled={item.quantity <= 1 || isOutOfStock}
                                   onClick={() =>
-                                    handleQuantityChange(
-                                      item._id,
-                                      item.quantity - 1,
-                                      stock,
-                                    )
+                                    handleDecrementCartItem({
+                                      productId: item.product._id,
+                                      variantId: item.variant,
+                                    })
                                   }
                                 >
                                   <FiMinus size={14} strokeWidth={3} />

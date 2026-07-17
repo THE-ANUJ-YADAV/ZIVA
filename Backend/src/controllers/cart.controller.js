@@ -162,3 +162,85 @@ export const incrementCartItemQuantity = async(req,res) =>{
     })
 
 }
+
+
+export const decrementCartItemQuantity = async (req, res) => {
+
+    console.log("Decrement Api hit")
+
+    try {
+
+        const { productId, variantId } = req.params;
+
+        const product = await productModel.findOne({
+            _id: productId,
+            "variants._id": variantId
+        });
+
+        if (!product) {
+            return res.status(404).json({
+                message: "Product not found",
+                success: false
+            });
+        }
+
+        const cart = await cartModel.findOne({ user: req.user._id });
+
+        if (!cart) {
+            return res.status(404).json({
+                message: "Cart not found",
+                success: false
+            });
+        }
+
+        const item = cart.items.find(
+            (item) =>
+                item.product.toString() === productId &&
+                item.variant?.toString() === variantId
+        );
+
+        if (!item) {
+            return res.status(404).json({
+                message: "Item not found in cart",
+                success: false
+            });
+        }
+
+        // Minimum quantity = 1
+        if (item.quantity === 1) {
+            return res.status(400).json({
+                message: "Minimum quantity is 1",
+                success: false
+            });
+        }
+
+        await cartModel.findOneAndUpdate(
+            {
+                user: req.user._id,
+                "items.product": productId,
+                "items.variant": variantId
+            },
+            {
+                $inc: {
+                    "items.$.quantity": -1
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        return res.status(200).json({
+            message: "Cart item quantity decremented successfully",
+            success: true
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+};

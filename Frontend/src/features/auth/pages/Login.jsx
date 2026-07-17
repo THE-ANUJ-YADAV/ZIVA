@@ -24,10 +24,8 @@ const Login = () => {
         e.preventDefault();
         try {
             const user = await handleLogin({ email: formData.email, password: formData.password });
-            if (user.role == "buyer") {
+            if (user.role == "buyer" || user.role == "seller") {
                 navigate("/");
-            } else if (user.role == "seller") {
-                navigate("/seller/dashboard");
             }
         } catch (error) {
             console.error("Login failed", error);

@@ -25,10 +25,22 @@ const cartSlice = createSlice({
             const id = action.payload;
             state.items = state.items.filter(item => item._id !== id);
         },
+        incrementCartItem: (state, action) => {
+            const { productId, variantId } = action.payload
+
+            state.items = state.items.map(item => {
+                if (item.product._id === productId && item.variant === variantId) {
+                    return { ...item, quantity: item.quantity + 1 }
+                } else {
+                    return item
+                }
+            })
+
+        }
     }
 
 })
 
-export const {setItems,addItem,updateQuantity,removeItem} = cartSlice.actions;
+export const {setItems,addItem,updateQuantity,removeItem,incrementCartItem} = cartSlice.actions;
 
 export default cartSlice.reducer;

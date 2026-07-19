@@ -1,6 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router';
+import { useEffect } from 'react';
+import { getWishlistApi } from '../features/wishlist/service/wishlist.api';
+import { setWishlistItems } from '../features/wishlist/state/wishlist.slice';
+import { getCart } from '../features/cart/service/cart.api';
+import { setItems } from '../features/cart/state/cart.slice';
 
 // --- Icons ---
 export const SearchIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>);
@@ -9,7 +14,28 @@ export const CartIcon = ({ className = "h-6 w-6" }) => (<svg xmlns="http://www.w
 export const UserIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>);
 
 const Navbar = () => {
+    const dispatch = useDispatch();
     const user = useSelector(state => state.auth?.user);
+    const wishlistItems = useSelector(state => state.wishlist?.items || []);
+    const cartItems = useSelector(state => state.cart?.items || []);
+
+    const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    useEffect(() => {
+        if (user) {
+            getWishlistApi().then(res => {
+                if (res.success) {
+                    dispatch(setWishlistItems(res.wishlist.items));
+                }
+            }).catch(err => console.error(err));
+
+            getCart().then(res => {
+                if (res.success) {
+                    dispatch(setItems(res.cart.items));
+                }
+            }).catch(err => console.error(err));
+        }
+    }, [user, dispatch]);
 
     return (
         <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
@@ -43,13 +69,25 @@ const Navbar = () => {
                     {/* Right - Icons */}
                     <div className="flex items-center space-x-6 text-gray-600">
                         <button className="hover:text-indigo-600 transition-colors"><SearchIcon /></button>
-                        <button className="hover:text-indigo-600 transition-colors"><HeartIcon /></button>
+                        <button className="hover:text-indigo-600 transition-colors relative">
+                            <Link to="/wishlist">
+                                <HeartIcon />
+                            </Link>
+                            {wishlistItems.length > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                                    {wishlistItems.length}
+                                </span>
+                            )}
+                        </button>
                         <button className="hover:text-indigo-600 transition-colors relative">
                             <Link to="/cart">
                                 <CartIcon/>
                             </Link>
-                            {/* Assuming cart items count logic here later, static '2' for now based on original file */}
-                            <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">2</span>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                                    {cartCount}
+                                </span>
+                            )}
                         </button>
                         <div className="flex items-center gap-2">
                             {user ? (

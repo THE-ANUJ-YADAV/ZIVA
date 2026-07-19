@@ -1,13 +1,25 @@
 import {addItem, getCart, removeItem,incrementCartItemApi,decrementCartItemApi} from "../service/cart.api"
 import { useDispatch } from "react-redux";
 import { addItem as addItemToCart, setItems,incrementCartItem ,decrementCartItem} from "../state/cart.slice";
+import toast from 'react-hot-toast';
 
 export const useCart = ()=>{
     const dispatch = useDispatch();
     
     async function handleaddItem({productId,variantId}) {
-        const data = await addItem({productId,variantId})
-        return data
+        try {
+            const data = await addItem({productId,variantId})
+            if (data.success) {
+                toast.success("Item added to cart successfully!");
+                await handleGetcart();
+            } else {
+                toast.error(data.message || "Failed to add item to cart");
+            }
+            return data
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to add item to cart");
+            throw error;
+        }
     }
 
     async function handleGetcart(){

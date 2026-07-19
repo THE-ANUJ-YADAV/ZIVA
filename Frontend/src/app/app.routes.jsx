@@ -9,6 +9,7 @@ import ProductDetails from "../features/Products/Pages/ProductDetails";
 import SellerProductDetails from "../features/Products/Pages/SellerProductDetails";
 import Cart from "../features/cart/Pages/Cart.jsx";
 import Layout from "./Layout.jsx";
+import Wishlist from "../features/wishlist/Pages/Wishlist.jsx";
 
 export const routes = createBrowserRouter([
     {
@@ -43,6 +44,10 @@ export const routes = createBrowserRouter([
             {
                 path: "/cart",
                 element: <Protected role={["buyer", "seller"]}><Cart /> </Protected>
+            },
+            {
+                path: "/wishlist",
+                element: <Protected role={["buyer", "seller"]}><Wishlist /> </Protected>
             }
         ]
     },

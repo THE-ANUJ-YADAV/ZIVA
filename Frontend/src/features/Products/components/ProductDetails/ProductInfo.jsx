@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToWishlistApi, removeFromWishlistApi } from '../../../wishlist/service/wishlist.api';
+import { addWishlistItem, removeWishlistItem } from '../../../wishlist/state/wishlist.slice';
 import { FiShoppingCart, FiHeart, FiShare2, FiStar } from 'react-icons/fi';
 import { BsLightningFill } from 'react-icons/bs';
 
@@ -18,6 +21,35 @@ const ProductInfo = ({
     productId,
     selectedVariant
 }) => {
+    const dispatch = useDispatch();
+    const wishlistItems = useSelector((state) => state.wishlist?.items || []);
+    
+    // Check if current product is in the wishlist
+    const isWishlisted = wishlistItems.some(item => {
+        const id = item.product?._id || item.product;
+        return id === productId;
+    });
+
+    const [isWishlistLoading, setIsWishlistLoading] = useState(false);
+
+    const handleWishlistToggle = async () => {
+        if (isWishlistLoading) return;
+        setIsWishlistLoading(true);
+        try {
+            if (isWishlisted) {
+                await removeFromWishlistApi(productId);
+                dispatch(removeWishlistItem(productId));
+            } else {
+                await addToWishlistApi(productId);
+                dispatch(addWishlistItem({ product: productId }));
+            }
+        } catch (error) {
+            console.error("Failed to toggle wishlist", error);
+        } finally {
+            setIsWishlistLoading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col">
             {/* Header: Brand, Title, Category */}
@@ -141,8 +173,18 @@ const ProductInfo = ({
 
             {/* Secondary Actions */}
             <div className="flex gap-4 mb-10">
-                <button className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-500 transition-colors">
-                    <FiHeart size={18} /> Add to Wishlist
+                <button 
+                    onClick={handleWishlistToggle}
+                    disabled={isWishlistLoading}
+                    className={`flex items-center gap-2 text-sm font-semibold transition-colors ${
+                        isWishlisted ? 'text-red-500 hover:text-red-600' : 'text-gray-600 hover:text-red-500'
+                    }`}
+                >
+                    <FiHeart 
+                        size={18} 
+                        className={isWishlisted ? "fill-current text-red-500" : ""}
+                    /> 
+                    {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                 </button>
                 <button className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-indigo-600 transition-colors ml-4">
                     <FiShare2 size={18} /> Share

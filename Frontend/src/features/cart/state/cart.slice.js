@@ -4,12 +4,16 @@ import {createSlice} from "@reduxjs/toolkit"
 const cartSlice = createSlice({
 
     name: "cart",
-    initialState:{
-     items: [],   
+    initialState: {
+        totalPrice: null,
+        currency: null,
+        items: [],
     },
-    reducers:{
-        setItems: (state,action) =>{
-            state.items = action.payload;
+    reducers: {
+        setCart:(state,action) =>{
+          state.items = action.payload.items;
+          state.totalPrice = action.payload.totalPrice;
+          state.currency = action.payload.currency;
         },
         addItem: (state,action) => {
             state.items.push(action.payload);
@@ -23,13 +27,20 @@ const cartSlice = createSlice({
         },
         removeItem: (state, action) => {
             const id = action.payload;
-            state.items = state.items.filter(item => item._id !== id);
+            const itemToRemove = state.items.find(item => item._id === id);
+            if (itemToRemove) {
+                const price = itemToRemove.price?.amount || 0;
+                state.totalPrice = Math.max(0, (state.totalPrice || 0) - (price * itemToRemove.quantity));
+                state.items = state.items.filter(item => item._id !== id);
+            }
         },
         incrementCartItem: (state, action) => {
             const { productId, variantId } = action.payload
 
             state.items = state.items.map(item => {
                 if (item.product._id === productId && item.variant === variantId) {
+                    const price = item.price?.amount || 0;
+                    state.totalPrice = (state.totalPrice || 0) + price;
                     return { ...item, quantity: item.quantity + 1 }
                 } else {
                     return item
@@ -42,6 +53,8 @@ const cartSlice = createSlice({
 
             state.items = state.items.map(item => {
                 if (item.product._id === productId && item.variant === variantId) {
+                    const price = item.price?.amount || 0;
+                    state.totalPrice = Math.max(0, (state.totalPrice || 0) - price);
                     return { ...item, quantity: item.quantity - 1 }
                 } else {
                     return item
@@ -53,6 +66,6 @@ const cartSlice = createSlice({
 
 })
 
-export const {setItems,addItem,updateQuantity,removeItem,incrementCartItem,decrementCartItem} = cartSlice.actions;
+export const {addItem,updateQuantity,removeItem,incrementCartItem,decrementCartItem,setCart} = cartSlice.actions;
 
 export default cartSlice.reducer;

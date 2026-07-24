@@ -15,6 +15,9 @@ import { updateQuantity, removeItem } from "../state/cart.slice";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items) || [];
+  const totalPrice = useSelector((state) => state.cart.totalPrice) || 0;
+  const currency = useSelector((state) => state.cart.currency) || "INR";
+  const currencySymbol = currency === "INR" ? "₹" : currency;
   const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem } =
     useCart();
   const dispatch = useDispatch();
@@ -40,12 +43,8 @@ const Cart = () => {
     }
   };
 
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + (item.price?.amount || 0) * (item.quantity || 1),
-    0,
-  );
-  const shipping = subtotal > 0 ? 50 : 0;
-  const total = subtotal + shipping;
+  const subtotal = Math.max(0, totalPrice);
+  const total = subtotal;
 
   return (
     <div className="min-h-screen bg-gray-50/40 py-8 px-4 sm:px-6 lg:px-8 font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900">
@@ -92,9 +91,9 @@ const Cart = () => {
                 </h2>
                 <div className="space-y-6">
                   {cartItems.map((item, idx) => {
-                    const variant = item.product?.variants?.find(
-                      (v) => v._id === item.variant,
-                    );
+                    const variant = Array.isArray(item.product?.variants) 
+                      ? item.product.variants.find((v) => v._id === item.variant)
+                      : item.product?.variants;
                     const displayImage =
                       variant?.images?.[0]?.url ||
                       item.product?.images?.[0]?.url;
@@ -102,6 +101,7 @@ const Cart = () => {
                       variant?.title ||
                       item.product?.title ||
                       "Unknown Product";
+                    const itemPrice = item.price?.amount ? item.price : (variant?.price || item.product?.price || { amount: 0, currency: 'INR' });
                     const attributes = variant?.attributes || {};
                     const stock = variant?.stock ?? item.product?.stock ?? 0;
                     const isOutOfStock = stock === 0;
@@ -147,16 +147,16 @@ const Cart = () => {
                             </div>
                             <div className="text-right shrink-0">
                               <div className="text-lg font-black text-gray-900">
-                                {item.price?.currency === "INR"
+                                {itemPrice.currency === "INR"
                                   ? "₹"
-                                  : item.price?.currency}
-                                {item.price?.amount * item.quantity}
+                                  : itemPrice.currency}
+                                {itemPrice.amount * item.quantity}
                               </div>
                               <div className="text-xs font-semibold text-gray-400 mt-1">
-                                {item.price?.currency === "INR"
+                                {itemPrice.currency === "INR"
                                   ? "₹"
-                                  : item.price?.currency}
-                                {item.price?.amount} each
+                                  : itemPrice.currency}
+                                {itemPrice.amount} each
                               </div>
                             </div>
                           </div>
@@ -227,11 +227,11 @@ const Cart = () => {
                 <div className="space-y-4 mb-6 text-sm font-medium text-gray-600">
                   <div className="flex justify-between items-center">
                     <span>Subtotal</span>
-                    <span className="text-gray-900 font-bold">₹{subtotal}</span>
+                    <span className="text-gray-900 font-bold">{currencySymbol}{subtotal}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Shipping estimate</span>
-                    <span className="text-gray-900 font-bold">₹{shipping}</span>
+                    <span className="text-green-600 font-bold">Free</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span>Tax estimate</span>
@@ -245,7 +245,7 @@ const Cart = () => {
                       Order Total
                     </span>
                     <span className="text-2xl font-black text-gray-900">
-                      ₹{total}
+                      {currencySymbol}{total}
                     </span>
                   </div>
                 </div>

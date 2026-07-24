@@ -1,6 +1,6 @@
 import {addItem, getCart, removeItem,incrementCartItemApi,decrementCartItemApi} from "../service/cart.api"
 import { useDispatch } from "react-redux";
-import { addItem as addItemToCart, setItems,incrementCartItem ,decrementCartItem} from "../state/cart.slice";
+import { addItem as addItemToCart,incrementCartItem ,decrementCartItem,setCart} from "../state/cart.slice";
 import toast from 'react-hot-toast';
 
 export const useCart = ()=>{
@@ -24,7 +24,7 @@ export const useCart = ()=>{
 
     async function handleGetcart(){
         const data = await getCart();
-        dispatch(setItems(data.cart.items))
+        dispatch(setCart(data.cart))
     }
 
     async function handleRemoveItemApi(itemId) {

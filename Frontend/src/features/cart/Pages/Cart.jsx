@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useRazorpay } from "react-razorpay";
 import { useCart } from "../hook/useCart";
 import {
   FiTrash2,
@@ -18,9 +19,11 @@ const Cart = () => {
   const totalPrice = useSelector((state) => state.cart.totalPrice) || 0;
   const currency = useSelector((state) => state.cart.currency) || "INR";
   const currencySymbol = currency === "INR" ? "₹" : currency;
-  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem } =
+  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem,handleCreateCartOrder } =
     useCart();
   const dispatch = useDispatch();
+  const { error, isLoading, Razorpay } = useRazorpay();
+  const user = useSelector(state => state.auth.user)
 
   useEffect(() => {
     handleGetcart();
@@ -43,6 +46,34 @@ const Cart = () => {
     }
   };
 
+  async function handleCheckOut() {
+    const Order = await handleCreateCartOrder();
+    console.log(Order)
+
+    const options =  {
+      key: "rzp_test_THprxKidKcPYdm",
+      amount: Order.amount, // Amount in paise
+      currency: Order.currency,
+      name: "ZIVA",
+      description: "Test Transaction",
+      order_id: Order.id, // Generate order_id on server
+      handler: (response) => {
+        console.log(response);
+        alert("Payment Successful!");
+      },
+      prefill: {
+        name: user.fullname,
+        email: user.email,
+        contact: user.contact,
+      },
+      theme: {
+        color: "#F37254",
+      },
+     
+  }
+  const rzp = new Razorpay(options);
+  rzp.open();
+  }
   const subtotal = Math.max(0, totalPrice);
   const total = subtotal;
 
@@ -250,7 +281,9 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5 active:translate-y-0">
+                <button
+                onClick={handleCheckOut}
+                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all hover:-translate-y-0.5 active:translate-y-0">
                   Checkout
                 </button>
 

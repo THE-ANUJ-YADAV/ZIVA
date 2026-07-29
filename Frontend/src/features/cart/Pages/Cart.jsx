@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRazorpay } from "react-razorpay";
 import { useCart } from "../hook/useCart";
+import { useNavigate } from "react-router";
 import {
   FiTrash2,
   FiMinus,
@@ -19,11 +20,12 @@ const Cart = () => {
   const totalPrice = useSelector((state) => state.cart.totalPrice) || 0;
   const currency = useSelector((state) => state.cart.currency) || "INR";
   const currencySymbol = currency === "INR" ? "₹" : currency;
-  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem,handleCreateCartOrder } =
+  const { handleGetcart, handleRemoveItemApi, handleIncrementCartItem,handleDecrementCartItem,handleCreateCartOrder,handleVerifyCartOrder } =
     useCart();
   const dispatch = useDispatch();
   const { error, isLoading, Razorpay } = useRazorpay();
   const user = useSelector(state => state.auth.user)
+  const navigate = useNavigate();
 
   useEffect(() => {
     handleGetcart();
@@ -52,14 +54,19 @@ const Cart = () => {
 
     const options =  {
       key: "rzp_test_THprxKidKcPYdm",
-      amount: Order.amount, // Amount in paise
-      currency: Order.currency,
+      amount: Order.order.amount, // Amount in paise
+      currency: Order.order.currency,
       name: "ZIVA",
       description: "Test Transaction",
-      order_id: Order.id, // Generate order_id on server
-      handler: (response) => {
-        console.log(response);
-        alert("Payment Successful!");
+      order_id: Order.order.id,
+       // Generate order_id on server
+      handler: async(response) => {
+       const isValid = await handleVerifyCartOrder(response)
+
+       if(isValid){
+        navigate(`/order-success?order_id = ${response?.razorpay_order_id}`)
+       }
+
       },
       prefill: {
         name: user.fullname,
@@ -69,6 +76,7 @@ const Cart = () => {
       theme: {
         color: "#F37254",
       },
+
      
   }
   const rzp = new Razorpay(options);

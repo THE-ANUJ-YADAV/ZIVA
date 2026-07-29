@@ -10,53 +10,78 @@ import SellerProductDetails from "../features/Products/Pages/SellerProductDetail
 import Cart from "../features/cart/Pages/Cart.jsx";
 import Layout from "./Layout.jsx";
 import Wishlist from "../features/wishlist/Pages/Wishlist.jsx";
+import OrderSuccess from "../features/cart/Pages/OrderSuccess.jsx";
 
 export const routes = createBrowserRouter([
-    {
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
         path: "/",
-        element: <Layout />,
+        element: <Home />,
+      },
+      {
+        path: "/product/:productId",
+        element: <ProductDetails />,
+      },
+      {
+        path: "/seller",
         children: [
-            {
-                path: "/",
-                element: <Home />
-            },
-            {
-                path: "/product/:productId",
-                element: <ProductDetails />
-            },
-            {
-                path: "/seller",
-                children: [
-                    {
-                        path: "/seller/create-product",
-                        element: <Protected role="seller"><CreateProduct /></Protected>
-                    },
-                    {
-                        path: "/seller/dashboard",
-                        element: <Protected role="seller"><Dashboard /></Protected>
-                    },
-                    {
-                        path: "/seller/product/:productId",
-                        element: <Protected role="seller"><SellerProductDetails /></Protected>
-                    }
-                ]
-            },
-            {
-                path: "/cart",
-                element: <Protected role={["buyer", "seller"]}><Cart /> </Protected>
-            },
-            {
-                path: "/wishlist",
-                element: <Protected role={["buyer", "seller"]}><Wishlist /> </Protected>
-            }
-        ]
-    },
-    {
-        path: "/register",
-        element: <Register />
-    },
-    {
-        path: "/login",
-        element: <Login />
-    }
-])
+          {
+            path: "/seller/create-product",
+            element: (
+              <Protected role="seller">
+                <CreateProduct />
+              </Protected>
+            ),
+          },
+          {
+            path: "/seller/dashboard",
+            element: (
+              <Protected role="seller">
+                <Dashboard />
+              </Protected>
+            ),
+          },
+          {
+            path: "/seller/product/:productId",
+            element: (
+              <Protected role="seller">
+                <SellerProductDetails />
+              </Protected>
+            ),
+          },
+        ],
+      },
+      {
+        path: "/cart",
+        element: (
+          <Protected role={["buyer", "seller"]}>
+            <Cart />{" "}
+          </Protected>
+        ),
+      },
+      {
+        path: "/wishlist",
+        element: (
+          <Protected role={["buyer", "seller"]}>
+            <Wishlist />{" "}
+          </Protected>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/order-success",
+    element: <OrderSuccess />,
+  },
+]);

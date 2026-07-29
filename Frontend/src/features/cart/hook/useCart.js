@@ -1,4 +1,4 @@
-import {addItem, getCart, removeItem,incrementCartItemApi,decrementCartItemApi,createCartOrder} from "../service/cart.api"
+import {addItem, getCart, removeItem,incrementCartItemApi,decrementCartItemApi,createCartOrder,verifyCartOrder} from "../service/cart.api"
 import { useDispatch } from "react-redux";
 import { addItem as addItemToCart,incrementCartItem ,decrementCartItem,setCart} from "../state/cart.slice";
 import toast from 'react-hot-toast';
@@ -47,13 +47,19 @@ export const useCart = ()=>{
         return data
     }
 
+    async function handleVerifyCartOrder({razorpay_payment_id,razorpay_order_id,razorpay_signature}){
+        const data = await verifyCartOrder({razorpay_payment_id,razorpay_order_id,razorpay_signature})
+        return data.success
+    }
+
     return{
         handleaddItem,
         handleGetcart,
         handleRemoveItemApi,
         handleIncrementCartItem,
         handleDecrementCartItem,
-        handleCreateCartOrder
+        handleCreateCartOrder,
+        handleVerifyCartOrder
     }
 }
 

@@ -33,7 +33,7 @@ passport.use(new GoogleStrategy({
 }))
 
 app.get("/",(_req,res)=>{
-    res.statusCode(200).json(
+    res.status(200).json(
         {
             success: true,
             message: "Server is running"

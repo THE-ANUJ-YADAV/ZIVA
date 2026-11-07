@@ -33,7 +33,12 @@ passport.use(new GoogleStrategy({
 }))
 
 app.get("/",(_req,res)=>{
-    res.statusCode(200).json({message: "Server is running"})
+    res.statusCode(200).json(
+        {
+            success: true,
+            message: "Server is running"
+        }
+    )
 })
 
 app.use("/api/auth", authRouter)

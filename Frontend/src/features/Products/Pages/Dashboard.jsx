@@ -101,7 +101,7 @@ const Dashboard = () => {
           </div>
           <Link 
             to="/seller/create-product"
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#4939C9] to-blue-500 hover:from-[#3B2D9E] hover:to-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-[0_4px_14px_0_rgba(73,57,201,0.39)] hover:shadow-[0_6px_20px_rgba(73,57,201,0.23)] hover:-translate-y-0.5 w-full sm:w-auto"
+            className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-md shadow-indigo-200 hover:-translate-y-0.5 active:translate-y-0 text-sm w-full sm:w-auto"
           >
             <Plus size={18} />
             Create Product

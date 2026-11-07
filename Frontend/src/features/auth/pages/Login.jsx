@@ -42,21 +42,21 @@ const Login = () => {
                 }}
             >
                 <div className="z-10 text-white max-w-[400px] mb-40">
-                    <h1 className="text-[2.5rem] lg:text-[3rem] font-bold mb-6 leading-[1.1] text-white">
-                        <span className="font-['Cinzel'] text-amber-300 tracking-[0.25em] drop-shadow-lg">
+                    <h1 className="text-[2.25rem] lg:text-[2.75rem] font-bold mb-6 leading-[1.15] text-white">
+                        <span className="font-brand text-amber-300 tracking-[0.2em] drop-shadow-md">
                             ZIVA
                         </span>
                         <span className="text-white">
                             {" "}— Where Fashion Meets Identity
                         </span>
                     </h1>
-                    <p className="text-base text-white/85 leading-8 pr-8 tracking-wide font-light">
-                        <span className="font-semibold text-cyan-300 underline decoration-cyan-300/60 underline-offset-4">
+                    <p className="text-sm lg:text-base text-white/90 leading-relaxed pr-6 tracking-normal font-normal">
+                        <span className="font-semibold text-cyan-200">
                             Welcome back
                         </span>{" "}
                         to
-                        <span className="font-medium text-white"> premium fashion </span>
-                        from trusted suppliers
+                        <span className="font-medium text-white"> premium curated fashion </span>
+                        from trusted ateliers
                         <span className="text-sky-200 font-medium"> worldwide.</span>
                     </p>
                 </div>
@@ -65,30 +65,23 @@ const Login = () => {
             {/* Right Column */}
             <div className="w-full lg:w-[55%] relative flex flex-col items-center justify-center p-8 sm:p-12 overflow-hidden bg-white">
 
-                {/* Decorative Top Right Corner */}
-                <div className="absolute top-0 right-0 w-48 h-48 sm:w-80 sm:h-80 pointer-events-none overflow-hidden sm:overflow-visible">
-                    <div className="absolute top-[-20px] right-[-10px] sm:top-[-40px] sm:right-[-20px] w-40 h-40 sm:w-64 sm:h-64 bg-[#D1E6FF] rounded-[40%_60%_70%_30%/40%_50%_60%_50%] opacity-80 z-0"></div>
-                    <div className="absolute top-[10px] right-[-15px] sm:top-[20px] sm:right-[-30px] w-32 h-32 sm:w-48 sm:h-48 bg-[#BFE0FF] rounded-[50%_50%_30%_70%/50%_40%_60%_50%] opacity-60 z-0"></div>
-                </div>
-
                 {/* ZIVA Logo Top Right */}
-                <div className="absolute top-4 right-4 sm:top-8 sm:right-12 flex flex-col items-center z-10">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span className="text-base font-black tracking-widest uppercase mt-1 text-gray-900">ZIVA</span>
+                <div className="absolute top-6 right-6 sm:top-8 sm:right-12 flex items-center gap-2 z-10">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-950 flex items-center justify-center text-white font-brand font-bold text-sm">Z</div>
+                    <span className="text-sm font-brand font-bold tracking-[0.25em] uppercase text-gray-950">ZIVA</span>
                 </div>
 
                 <div className="w-full max-w-[380px] z-10">
-                    <h2 className="text-[#3B2D9E] text-[1.75rem] font-bold mb-8">Sign in to ZIVA</h2>
+                    <div className="mb-8">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600 block mb-1">Account Access</span>
+                        <h2 className="text-gray-950 text-2xl sm:text-3xl font-extrabold tracking-tight">Sign in to ZIVA</h2>
+                    </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
 
                         {/* Email Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="email">Email Address</label>
+                            <label className="text-xs font-semibold text-gray-700 mb-1.5" htmlFor="email">Email Address</label>
                             <input
                                 type="email"
                                 id="email"
@@ -96,13 +89,17 @@ const Login = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
+                                placeholder="name@domain.com"
+                                className="border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-11"
                             />
                         </div>
 
                         {/* Password Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="password">Password</label>
+                            <div className="flex justify-between items-center mb-1.5">
+                                <label className="text-xs font-semibold text-gray-700" htmlFor="password">Password</label>
+                                <a href="#" className="text-xs text-indigo-600 hover:text-indigo-800 font-medium">Forgot Password?</a>
+                            </div>
                             <input
                                 type="password"
                                 id="password"
@@ -110,29 +107,27 @@ const Login = () => {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
+                                placeholder="••••••••"
+                                className="border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-11"
                             />
                         </div>
 
-                        <div className="flex justify-end pt-1">
-                            <a href="#" className="text-[12px] text-[#3B2D9E] hover:underline font-medium">Forgot Password?</a>
-                        </div>
-
                         {/* Submit Button */}
-                        <div className="pt-4">
+                        <div className="pt-2">
                             <button
                                 type="submit"
-                                className="w-36 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm shadow-md hover:scale-105"
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 text-sm shadow-md shadow-indigo-200 hover:-translate-y-0.5 active:translate-y-0"
                             >
-                                LOGIN
+                                Sign In
                             </button>
                         </div>
                         <ContinueWithGoogle />
 
                         {/* Register Link */}
-                        <div className="text-center pt-8">
-                            <p className="text-[14px] font-medium text-gray-800">
-                                Don't have an account? <a href="/register" className="text-[#3B2D9E] font-semibold hover:underline">Register</a>
+                        <div className="text-center pt-6">
+                            <p className="text-xs font-medium text-gray-600">
+                                Don't have an account yet?{" "}
+                                <a href="/register" className="text-indigo-600 font-bold hover:underline">Create an account</a>
                             </p>
                         </div>
 

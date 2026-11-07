@@ -68,16 +68,16 @@ const CreateProduct = () => {
             >
 
                 <div className="z-10 text-white max-w-[400px]">
-                    <h1 className="text-[2.5rem] lg:text-[3rem] font-bold mb-6 leading-[1.1] text-white">
-                        <span className="font-['Cinzel'] text-amber-300 tracking-[0.25em] drop-shadow-lg">
+                    <h1 className="text-[2.25rem] lg:text-[2.75rem] font-bold mb-6 leading-[1.15] text-white">
+                        <span className="font-brand text-amber-300 tracking-[0.2em] drop-shadow-md">
                             ZIVA
                         </span>
-                        <span className="block mt-2 text-[2rem] text-white">
+                        <span className="block mt-2 text-[1.75rem] text-white">
                             Expand Your Collection
                         </span>
                     </h1>
-                    <p className="text-base text-white/85 leading-8 pr-8 tracking-wide font-light">
-                        <span className="font-semibold text-cyan-100 underline decoration-cyan-300/60 underline-offset-4">
+                    <p className="text-sm lg:text-base text-white/90 leading-relaxed pr-6 tracking-normal font-normal">
+                        <span className="font-semibold text-cyan-200">
                             Add new pieces
                         </span>{" "}
                         to your catalog. Showcase the latest trends and premium fashion to our
@@ -218,7 +218,7 @@ const CreateProduct = () => {
                             </button>
                             <button
                                 type="submit"
-                                className="w-full sm:w-auto bg-gradient-to-r from-[#4939C9] to-blue-500 hover:from-[#3B2D9E] hover:to-blue-600 text-white font-semibold py-2.5 px-8 rounded-lg transition-all duration-300 text-sm shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                                className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 text-sm shadow-md shadow-indigo-200 hover:-translate-y-0.5 active:translate-y-0"
                             >
                                 Create Product
                             </button>

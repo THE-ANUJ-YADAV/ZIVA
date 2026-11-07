@@ -38,64 +38,87 @@ const Navbar = () => {
     }, [user, dispatch]);
 
     return (
-        <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100/80 transition-all">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     {/* Left - Logo */}
-                    <div className="flex-shrink-0 flex items-center cursor-pointer gap-2">
-                        <Link to="/" className="flex items-center gap-2">
-                            <CartIcon className="h-10 w-10 text-[#2E2A8F]" />
-                            <span className="text-4xl font-black tracking-[0.3em] uppercase text-[#2E2A8F] drop-shadow-sm">
+                    <div className="flex-shrink-0 flex items-center cursor-pointer">
+                        <Link to="/" className="flex items-center gap-2.5 group">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-950 via-indigo-900 to-indigo-700 flex items-center justify-center text-white shadow-sm shadow-indigo-950/20 group-hover:scale-105 transition-transform">
+                                <span className="font-brand font-bold text-lg tracking-wider">Z</span>
+                            </div>
+                            <span className="font-brand text-2xl font-bold tracking-[0.25em] text-gray-950 uppercase group-hover:text-indigo-900 transition-colors">
                                 ZIVA
                             </span>
                         </Link>
                     </div>
                     
                     {/* Center - Links */}
-                    <div className="hidden md:flex space-x-8 items-center">
+                    <div className="hidden md:flex space-x-7 items-center">
                         {['Home', 'Men', 'Women', 'New Arrivals', 'Categories'].map((item) => (
-                            <a key={item} href="#" className="text-gray-800 font-medium hover:text-indigo-600 relative group transition-colors duration-300">
+                            <Link 
+                                key={item} 
+                                to="/" 
+                                className="text-[13px] font-semibold uppercase tracking-wider text-gray-700 hover:text-indigo-600 relative group transition-colors duration-200 py-1"
+                            >
                                 {item}
-                                <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full"></span>
-                            </a>
+                                <span className="absolute left-0 -bottom-0.5 w-0 h-0.5 bg-indigo-600 transition-all duration-200 group-hover:w-full rounded-full"></span>
+                            </Link>
                         ))}
                         {user?.role === 'seller' && (
-                            <Link to="/seller/dashboard" className="bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-colors duration-300 px-4 py-1.5 rounded-full text-sm shadow-sm ml-2">
+                            <Link to="/seller/dashboard" className="bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all duration-200 px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider shadow-sm ml-2">
                                 Seller Dashboard
                             </Link>
                         )}
                     </div>
 
                     {/* Right - Icons */}
-                    <div className="flex items-center space-x-6 text-gray-600">
-                        <button className="hover:text-indigo-600 transition-colors"><SearchIcon /></button>
-                        <button className="hover:text-indigo-600 transition-colors relative">
-                            <Link to="/wishlist">
-                                <HeartIcon />
-                            </Link>
+                    <div className="flex items-center space-x-3 text-gray-700">
+                        <button className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 hover:text-indigo-600 transition-colors" title="Search">
+                            <SearchIcon />
+                        </button>
+                        <Link 
+                            to="/wishlist" 
+                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 hover:text-indigo-600 transition-colors relative"
+                            title="Wishlist"
+                        >
+                            <HeartIcon />
                             {wishlistItems.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                                <span className="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full flex items-center justify-center ring-2 ring-white">
                                     {wishlistItems.length}
                                 </span>
                             )}
-                        </button>
-                        <button className="hover:text-indigo-600 transition-colors relative">
-                            <Link to="/cart">
-                                <CartIcon/>
-                            </Link>
+                        </Link>
+                        <Link 
+                            to="/cart" 
+                            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 hover:text-indigo-600 transition-colors relative"
+                            title="Shopping Bag"
+                        >
+                            <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                                <span className="absolute top-1 right-1 bg-indigo-600 text-white text-[10px] font-bold h-4 min-w-4 px-1 rounded-full flex items-center justify-center ring-2 ring-white">
                                     {cartCount}
                                 </span>
                             )}
-                        </button>
-                        <div className="flex items-center gap-2">
+                        </Link>
+                        <div className="flex items-center gap-2 pl-2 border-l border-gray-200 ml-1">
                             {user ? (
-                                <span className="text-sm font-semibold text-gray-800">{user.fullname}</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-semibold text-gray-800 max-w-[120px] truncate hidden sm:inline-block">
+                                        {user.fullname}
+                                    </span>
+                                    <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-bold">
+                                        {user.fullname ? user.fullname.charAt(0).toUpperCase() : 'U'}
+                                    </div>
+                                </div>
                             ) : (
-                                <Link to="/login" className="text-sm font-semibold text-indigo-600 hover:text-indigo-800">Login</Link>
+                                <Link 
+                                    to="/login" 
+                                    className="text-xs font-bold uppercase tracking-wider text-indigo-600 hover:text-indigo-800 px-3 py-1.5 rounded-full hover:bg-indigo-50 transition-colors"
+                                >
+                                    Sign In
+                                </Link>
                             )}
-                            <button className="hover:text-indigo-600 transition-colors"><UserIcon /></button>
                         </div>
                     </div>
                 </div>

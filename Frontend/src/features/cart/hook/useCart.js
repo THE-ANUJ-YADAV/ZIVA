@@ -6,21 +6,42 @@ import toast from 'react-hot-toast';
 export const useCart = ()=>{
     const dispatch = useDispatch();
     
-    async function handleaddItem({productId,variantId}) {
-        try {
-            const data = await addItem({productId,variantId})
-            if (data.success) {
-                toast.success("Item added to cart successfully!");
-                await handleGetcart();
-            } else {
-                toast.error(data.message || "Failed to add item to cart");
-            }
-            return data
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to add item to cart");
-            throw error;
+async function handleaddItem({ productId, variantId }) {
+    try {
+        console.log("Product ID:", productId);
+        console.log("Variant ID:", variantId);
+
+        if (!productId) {
+            toast.error("Product ID is missing");
+            return;
         }
+
+        if (!variantId) {
+            toast.error("Please select a product variant");
+            return;
+        }
+
+        const data = await addItem({ productId, variantId });
+
+        if (data.success) {
+            toast.success("Item added to cart successfully!");
+            await handleGetcart();
+        } else {
+            toast.error(data.message || "Failed to add item to cart");
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("Add to cart error:", error.response?.data || error);
+
+        toast.error(
+            error.response?.data?.message || "Failed to add item to cart"
+        );
+
+        throw error;
     }
+}
 
     async function handleGetcart(){
         const data = await getCart();

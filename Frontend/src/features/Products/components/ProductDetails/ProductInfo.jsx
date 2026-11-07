@@ -60,63 +60,63 @@ const ProductInfo = ({
     <div className="flex flex-col">
       {/* Header: Brand, Title, Category */}
       <div className="mb-6">
-        <h2 className="text-[14px] font-bold text-indigo-600 uppercase tracking-[0.2em] mb-2">
+        <span className="text-xs font-bold text-indigo-600 uppercase tracking-[0.2em] mb-2 block">
           {brand}
-        </h2>
-        <h1 className="text-3xl lg:text-4xl font-semibold text-gray-900 leading-snug mb-3 tracking-tight">
+        </span>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-950 leading-tight mb-3 tracking-tight">
           {title}
         </h1>
-        <div className="flex items-center gap-4 text-sm">
-          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium">
+        <div className="flex items-center gap-3 text-xs">
+          <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-semibold uppercase tracking-wider text-[11px]">
             {category}
           </span>
-          <div className="flex items-center text-yellow-500">
-            <FiStar className="fill-current" />
-            <FiStar className="fill-current" />
-            <FiStar className="fill-current" />
-            <FiStar className="fill-current" />
-            <FiStar className="text-gray-300 fill-current" />
-            <span className="text-gray-500 ml-2 font-medium">
-              (128 Reviews)
+          <div className="flex items-center text-amber-400">
+            <FiStar className="fill-current w-3.5 h-3.5" />
+            <FiStar className="fill-current w-3.5 h-3.5" />
+            <FiStar className="fill-current w-3.5 h-3.5" />
+            <FiStar className="fill-current w-3.5 h-3.5" />
+            <FiStar className="text-gray-200 fill-current w-3.5 h-3.5" />
+            <span className="text-gray-500 ml-1.5 font-medium">
+              (128 Verified Reviews)
             </span>
           </div>
         </div>
       </div>
 
       {/* Price & Stock */}
-      <div className="mb-8">
-        <div className="flex items-end gap-3 mb-2">
-          <span className="text-4xl font-bold text-gray-900 tracking-tight">
+      <div className="mb-6">
+        <div className="flex items-baseline gap-3 mb-1.5">
+          <span className="text-3xl sm:text-4xl font-extrabold text-gray-950 tracking-tight">
             {displayPrice.currency === "INR" ? "₹" : displayPrice.currency}
-            {displayPrice.amount}
+            {displayPrice.amount?.toLocaleString()}
           </span>
-          <span className="text-xl text-gray-400 line-through mb-1 font-medium">
-            ₹{Math.round((displayPrice.amount || 0) * 1.5)}
+          <span className="text-lg text-gray-400 line-through font-normal">
+            ₹{Math.round((displayPrice.amount || 0) * 1.5).toLocaleString()}
           </span>
-          <span className="text-xs font-bold text-green-700 mb-1.5 px-2 py-1 bg-green-100 rounded-md tracking-wider">
+          <span className="text-xs font-bold text-emerald-700 px-2 py-0.5 bg-emerald-50 rounded-md tracking-wider">
             33% OFF
           </span>
         </div>
-        <p className="text-xs text-gray-500 font-medium">
-          Inclusive of all taxes
+        <p className="text-xs text-gray-400 font-medium">
+          Inclusive of all taxes & duty charges
         </p>
 
-        <div className="mt-4">
+        <div className="mt-3">
           {displayStock !== 0 ? (
-            <span className="text-sm font-semibold text-green-600 flex items-center">
-              <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-              {displayStock > 0 ? `${displayStock} in stock` : "In Stock"}
+            <span className="text-xs font-semibold text-emerald-600 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+              {displayStock > 0 ? `${displayStock} units available` : "In Stock - Ready to Dispatch"}
             </span>
           ) : (
-            <span className="text-sm font-semibold text-red-600 flex items-center">
-              <span className="w-2 h-2 rounded-full bg-red-500 mr-2"></span>
+            <span className="text-xs font-semibold text-rose-600 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-rose-500 mr-2"></span>
               Out of Stock
             </span>
           )}
         </div>
       </div>
 
-      <hr className="border-gray-200 mb-8" />
+      <hr className="border-gray-200/80 mb-6" />
 
       {/* Attributes Selection (Size, Color, etc.) */}
       {attributeKeys?.length > 0 && (
@@ -167,11 +167,11 @@ const ProductInfo = ({
       )}
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 mt-4">
+      <div className="flex flex-col sm:flex-row gap-3.5 mb-6 mt-4">
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 flex items-center justify-center gap-2 bg-white text-gray-900 border-2 border-gray-900 px-6 py-4 rounded-[16px] font-bold text-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          className="flex-1 flex items-center justify-center gap-2 bg-white text-gray-900 border-2 border-gray-900 px-6 py-3.5 rounded-xl font-bold text-sm hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-2xs"
           disabled={
             displayStock === 0 || (attributeKeys.length > 0 && !selectedVariant)
           }
@@ -184,40 +184,40 @@ const ProductInfo = ({
             }
           }}
         >
-          <FiShoppingCart size={20} strokeWidth={2.5} /> Add to Bag
+          <FiShoppingCart size={18} strokeWidth={2.5} /> Add to Bag
         </motion.button>
 
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-4 rounded-[16px] font-bold text-lg shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           disabled={
             displayStock === 0 || (attributeKeys.length > 0 && !selectedVariant)
           }
         >
-          <BsLightningFill size={20} /> Buy Now
+          <BsLightningFill size={18} /> Instant Checkout
         </motion.button>
       </div>
 
       {/* Secondary Actions */}
-      <div className="flex gap-4 mb-10">
+      <div className="flex items-center gap-6 mb-8 pt-2">
         <button
           onClick={handleWishlistToggle}
           disabled={isWishlistLoading}
-          className={`flex items-center gap-2 text-sm font-semibold transition-colors ${
+          className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors ${
             isWishlisted
-              ? "text-red-500 hover:text-red-600"
-              : "text-gray-600 hover:text-red-500"
+              ? "text-rose-600 hover:text-rose-700"
+              : "text-gray-600 hover:text-rose-600"
           }`}
         >
           <FiHeart
-            size={18}
-            className={isWishlisted ? "fill-current text-red-500" : ""}
+            size={16}
+            className={isWishlisted ? "fill-current text-rose-600" : ""}
           />
-          {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+          {isWishlisted ? "In Wishlist" : "Save to Wishlist"}
         </button>
-        <button className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-indigo-600 transition-colors ml-4">
-          <FiShare2 size={18} /> Share
+        <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-600 hover:text-indigo-600 transition-colors">
+          <FiShare2 size={16} /> Share Style
         </button>
       </div>
 

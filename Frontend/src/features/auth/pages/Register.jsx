@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from "../hook/useAuth"
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 const Register = () => {
@@ -51,21 +51,21 @@ const Register = () => {
                 }}
             >
                 <div className="z-10 text-white max-w-[400px] mb-40">
-                    <h1 className="text-[2.5rem] lg:text-[3rem] font-bold mb-6 leading-[1.1] text-white">
-                        <span className="font-['Cinzel'] text-amber-300 tracking-[0.25em] drop-shadow-lg">
+                    <h1 className="text-[2.25rem] lg:text-[2.75rem] font-bold mb-6 leading-[1.15] text-white">
+                        <span className="font-brand text-amber-300 tracking-[0.2em] drop-shadow-md">
                             ZIVA
                         </span>
                         <span className="text-white">
                             {" "}— Where Fashion Meets Identity
                         </span>
                     </h1>
-                    <p className="text-base text-white/85 leading-8 pr-8 tracking-wide font-light">
-                        <span className="font-semibold text-cyan-300 underline decoration-cyan-300/60 underline-offset-4">
+                    <p className="text-sm lg:text-base text-white/90 leading-relaxed pr-6 tracking-normal font-normal">
+                        <span className="font-semibold text-cyan-200">
                             Join ZIVA
                         </span>{" "}
                         and discover
-                        <span className="font-medium text-white"> premium fashion </span>
-                        from trusted suppliers
+                        <span className="font-medium text-white"> premium curated fashion </span>
+                        from trusted ateliers
                         <span className="text-sky-200 font-medium"> worldwide.</span>
                     </p>
                 </div>
@@ -81,23 +81,22 @@ const Register = () => {
                 </div>
 
                 {/* ZIVA Logo Top Right */}
-                <div className="absolute top-4 right-4 sm:top-8 sm:right-12 flex flex-col items-center z-10">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
-                    <span className="text-base font-black tracking-widest uppercase mt-1 text-gray-900">ZIVA</span>
+                <div className="absolute top-6 right-6 sm:top-8 sm:right-12 flex items-center gap-2 z-10">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-950 flex items-center justify-center text-white font-brand font-bold text-sm">Z</div>
+                    <span className="text-sm font-brand font-bold tracking-[0.25em] uppercase text-gray-950">ZIVA</span>
                 </div>
 
-                <div className="w-full max-w-[380px] z-10">
-                    <h2 className="text-[#3B2D9E] text-[1.75rem] font-bold mb-8">Create new account</h2>
+                <div className="w-full max-w-[400px] z-10 py-4">
+                    <div className="mb-6">
+                        <span className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-600 block mb-1">New Member</span>
+                        <h2 className="text-gray-950 text-2xl sm:text-3xl font-extrabold tracking-tight">Create your account</h2>
+                    </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-3">
 
                         {/* Name Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="name">Name</label>
+                            <label className="text-xs font-semibold text-gray-700 mb-1" htmlFor="name">Full Name</label>
                             <input
                                 type="text"
                                 id="name"
@@ -105,27 +104,14 @@ const Register = () => {
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
-                            />
-                        </div>
-
-                        {/* Password Input */}
-                        <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="password">Password</label>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
+                                placeholder="Your Name"
+                                className="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-10"
                             />
                         </div>
 
                         {/* Email Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="email">Email Address</label>
+                            <label className="text-xs font-semibold text-gray-700 mb-1" htmlFor="email">Email Address</label>
                             <input
                                 type="email"
                                 id="email"
@@ -133,13 +119,29 @@ const Register = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
+                                placeholder="name@domain.com"
+                                className="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-10"
                             />
                         </div>
 
-                        {/* Contact Number Input */}
+                        {/* Password Input */}
                         <div className="flex flex-col">
-                            <label className="text-[13px] text-gray-500 mb-1.5" htmlFor="contactNumber">Contact Number</label>
+                            <label className="text-xs font-semibold text-gray-700 mb-1" htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="••••••••"
+                                className="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-10"
+                            />
+                        </div>
+
+                        {/* Contact Number */}
+                        <div className="flex flex-col">
+                            <label className="text-xs font-semibold text-gray-700 mb-1" htmlFor="contactNumber">Contact Number</label>
                             <input
                                 type="tel"
                                 id="contactNumber"
@@ -147,18 +149,16 @@ const Register = () => {
                                 value={formData.contactNumber}
                                 onChange={handleChange}
                                 required
-                                className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#4939C9] focus:ring-1 focus:ring-[#4939C9] transition-colors bg-white text-gray-900 h-10"
+                                placeholder="+91 98765 43210"
+                                className="border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 transition-all bg-gray-50/50 hover:bg-white text-gray-900 text-sm h-10"
                             />
                         </div>
 
-                        {/* Signing As */}
-                        <div className="flex flex-col pt-3">
-                            <label className="text-[13px] text-gray-500 mb-2">Signing As</label>
-                            <div className="flex items-center space-x-6 sm:space-x-12">
-                                <label className="flex items-center cursor-pointer group">
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!formData.isSeller ? 'border-black' : 'border-gray-400 group-hover:border-gray-600'}`}>
-                                        {!formData.isSeller && <div className="w-2 h-2 bg-black rounded-full"></div>}
-                                    </div>
+                        {/* Signing As Radio Buttons */}
+                        <div className="pt-1">
+                            <label className="text-xs font-semibold text-gray-700 mb-1.5 block">Signing As</label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <label className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${!formData.isSeller ? 'bg-indigo-50 border-indigo-600 text-indigo-700 shadow-2xs' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                                     <input
                                         type="radio"
                                         name="signingAs"
@@ -166,13 +166,10 @@ const Register = () => {
                                         checked={!formData.isSeller}
                                         onChange={() => handleRadioChange(false)}
                                     />
-                                    <span className="ml-2.5 text-[14px] text-gray-800">Buyer</span>
+                                    <span>Individual Buyer</span>
                                 </label>
 
-                                <label className="flex items-center cursor-pointer group">
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${formData.isSeller ? 'border-black' : 'border-gray-400 group-hover:border-gray-600'}`}>
-                                        {formData.isSeller && <div className="w-2 h-2 bg-black rounded-full"></div>}
-                                    </div>
+                                <label className={`flex items-center justify-center p-2.5 rounded-xl border text-xs font-semibold cursor-pointer transition-all ${formData.isSeller ? 'bg-indigo-50 border-indigo-600 text-indigo-700 shadow-2xs' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
                                     <input
                                         type="radio"
                                         name="signingAs"
@@ -180,7 +177,7 @@ const Register = () => {
                                         checked={formData.isSeller}
                                         onChange={() => handleRadioChange(true)}
                                     />
-                                    <span className="ml-2.5 text-[14px] text-gray-800">Supplier</span>
+                                    <span>Brand / Supplier</span>
                                 </label>
                             </div>
                         </div>
@@ -188,24 +185,24 @@ const Register = () => {
                         <ContinueWithGoogle />
 
                         {/* Submit Button */}
-                        <div className="pt-6">
+                        <div className="pt-2">
                             <button
                                 type="submit"
-                                className="w-36 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 text-sm shadow-md hover:scale-105"
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 text-sm shadow-md shadow-indigo-200 hover:-translate-y-0.5 active:translate-y-0"
                             >
-                                SIGN UP
+                                Complete Registration
                             </button>
                         </div>
 
                         {/* Terms Text */}
-                        <p className="text-[10px] text-gray-700 mt-1 pb-4 border-b border-transparent">
-                            By registering, you agree to the <a href="#" className="text-[#3B2D9E] underline">Terms and Conditions</a>
+                        <p className="text-[11px] text-gray-400 text-center">
+                            By registering, you agree to ZIVA's <a href="#" className="text-indigo-600 underline">Terms and Conditions</a>
                         </p>
 
                         {/* Login Link */}
-                        <div className="text-center pt-8">
-                            <p className="text-[14px] font-medium text-gray-800">
-                                Already registered? <a href="/login" className="text-[#3B2D9E] font-semibold hover:underline">Login</a>
+                        <div className="text-center pt-2">
+                            <p className="text-xs font-medium text-gray-600">
+                                Already registered? <a href="/login" className="text-indigo-600 font-bold hover:underline">Login</a>
                             </p>
                         </div>
 

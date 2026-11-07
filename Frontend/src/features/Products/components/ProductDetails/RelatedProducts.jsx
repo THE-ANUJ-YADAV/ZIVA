@@ -30,19 +30,19 @@ const MOCK_PRODUCTS = [
 
 const ProductCard = ({ product }) => (
     <motion.div 
-        whileHover={{ y: -5 }}
+        whileHover={{ y: -4 }}
         className="group cursor-pointer flex flex-col"
     >
-        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 mb-4">
+        <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 mb-3 shadow-2xs">
             <img 
                 src={product.image} 
                 alt={product.title} 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
         </div>
-        <h4 className="text-sm font-semibold text-gray-900 truncate">{product.title}</h4>
-        <span className="text-sm text-gray-500 font-medium">{product.price}</span>
+        <h4 className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors truncate mb-0.5">{product.title}</h4>
+        <span className="text-sm font-bold text-gray-950">{product.price}</span>
     </motion.div>
 );
 
